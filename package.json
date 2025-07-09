@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "3d-force-graph": "^1.78.2"
+  },
+  "devDependencies": {
+    "vite": "^7.0.3"
+  }
+}
