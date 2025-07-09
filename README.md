@@ -1,7 +1,7 @@
-# HOW TO RUN
+# How to run the project
 
-# 1. Install dependencies: `npm install`
+1. Install dependencies: `npm install`
 
-# 2. Start the server: `npx vite`
+2. Start the server: `npx vite`
 
-# 3. Open the browser: `http://localhost:5173/`
+3. Open the browser: `http://localhost:5173/`
