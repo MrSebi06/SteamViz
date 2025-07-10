@@ -5,31 +5,37 @@ import SpriteText from "https://esm.sh/three-spritetext";
 const CONFIG = {
     // Configuration des nœuds
     node: {
-        textHeight: 6,
-        textOffsetY: -2.0,
-        colorBy: "group"
+        textHeight: 100,
+        textOffsetY: -100.0,
+        colorBy: "genres",
+        minSize: 1,
+        maxSize: 10000
     },
 
     // Configuration des liens
     link: {
-        opacity: 0.7,
-        // Épaisseur minimale et maximale des liens (en pixels)
-        minWidth: 1.0,
-        maxWidth: 15.0
+        opacity: 0.3,
+        minWidth: 0.5,
+        maxWidth: 20
     },
 
     // Configuration de la force physique
     physics: {
-        chargeStrength: -1200
+        chargeStrength: -10000
     },
 
     // Sources de données
-    dataUrl: "data/test.json",
+    dataUrl: "data/games.json",
     configUrl: "data/config.json"
 };
 
-// Variables pour stocker les valeurs min/max des liens
+// Variables pour stocker les valeurs min/max des liens et nœuds
 let linkValueRange = {
+    min: 0,
+    max: 1
+};
+
+let nodeValueRange = {
     min: 0,
     max: 1
 };
@@ -60,15 +66,25 @@ function normalize(value, min, max) {
 
 /**
  * Calcule l'épaisseur d'un lien en fonction de sa valeur
- * @param {number} value - Valeur du lien
  * @returns {number} - Épaisseur calculée
  */
-function calculateLinkWidth(value) {
+function calculateLinkWidth() {
     // Normalise la valeur entre 0 et 1
     const normalizedValue = normalize(value, linkValueRange.min, linkValueRange.max);
 
     // Interpole entre l'épaisseur min et max
     return lerp(CONFIG.link.minWidth, CONFIG.link.maxWidth, normalizedValue);
+}
+
+/**
+ * Calcule la taille d'un nœud en fonction de sa valeur
+ * @param {number} value - Valeur du nœud
+ * @returns {number} - Taille calculée
+ */
+function calculateNodeSize(value) {
+
+    const normalizedValue = normalize(value, nodeValueRange.min, nodeValueRange.max);
+    return lerp(CONFIG.node.minSize, CONFIG.node.maxSize, normalizedValue);
 }
 
 /**
@@ -87,15 +103,17 @@ async function loadConfiguration() {
         linkValueRange.min = configData.links_min_value || 0;
         linkValueRange.max = configData.links_max_value || 1;
 
-        console.log(`Configuration chargée - Valeurs des liens: [${linkValueRange.min}, ${linkValueRange.max}]`);
-
+        // Met à jour les valeurs min/max des nœuds
+        nodeValueRange.min = configData.node_min_value || 0;
+        nodeValueRange.max = configData.node_max_value || 1;
         return configData;
     } catch (error) {
         console.error("Erreur lors du chargement de la configuration:", error);
-        // Utilise des valeurs par défaut en cas d'erreur
         return {
             links_min_value: 0,
-            links_max_value: 1
+            links_max_value: 1,
+            node_min_value: 0,
+            node_max_value: 1
         };
     }
 }
@@ -114,9 +132,14 @@ function createNodeLabel(node) {
     // Applique la couleur du nœud au texte
     sprite.color = node.color;
 
-    // Configure la taille et la position du texte
-    sprite.textHeight = CONFIG.node.textHeight;
-    sprite.center.y = CONFIG.node.textOffsetY;
+    // Adapte la taille du texte en fonction de la taille du nœud
+    // On utilise une interpolation pour que le texte soit proportionnel
+    const nodeSize = calculateNodeSize(node.value);
+    const textSizeRatio = 0.4; // Le texte fait 40% de la taille du nœud
+    sprite.textHeight = nodeSize * textSizeRatio;
+
+    // Ajuste la position verticale en fonction de la taille
+    sprite.center.y = -(nodeSize * 0.15); // Position dynamique sous le nœud
 
     return sprite;
 }
@@ -180,14 +203,12 @@ function initializeGraph() {
         // Étend l'objet 3D au lieu de le remplacer (garde la sphère + ajoute le texte)
         .nodeThreeObjectExtend(true)
 
-        // Définit la taille du nœud basée sur sa valeur
-        .nodeVal(node => node.value)
+        // Définit la taille du nœud
+        .nodeVal((node) => calculateNodeSize(node.players))
 
         // === Configuration des liens ===
         // Définit la largeur des liens avec interpolation linéaire
-        .linkWidth(link => calculateLinkWidth(link.value))
-
-        .linkLabel(link => link.value.toString())
+        .linkWidth((link) => calculateLinkWidth(link.value))
 
         // Définit l'opacité des liens
         .linkOpacity(CONFIG.link.opacity);
@@ -216,6 +237,11 @@ async function initializeApp() {
 
         // 4. Configure l'observation du redimensionnement
         setupResizeObserver(graphContainer);
+
+        graph.onEngineStop(() => {
+            graph.zoomToFit(400);
+            console.log("Zoom to fit activé");
+        })
 
         console.log("Application initialisée avec succès");
 
