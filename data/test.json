@@ -3,7 +3,7 @@
     { "id": "1", "name": "Elden Ring", "group": 1, "value": 6 },
     { "id": "2", "name": "Counter Strike", "group": 2, "value": 15 },
     { "id": "3", "name": "Apex Legends", "group": 2, "value": 9 },
-    { "id": "4", "name": "Hades", "group": 3, "value": 60 }
+    { "id": "4", "name": "Hades", "group": 3, "value": 1000 }
   ],
   "links": [
     { "source": "1", "target": "2", "value": 50 },
