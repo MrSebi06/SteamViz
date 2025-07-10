@@ -66,9 +66,10 @@ function normalize(value, min, max) {
 
 /**
  * Calcule l'épaisseur d'un lien en fonction de sa valeur
+ * @param {number} value - Valeur du lien
  * @returns {number} - Épaisseur calculée
  */
-function calculateLinkWidth() {
+function calculateLinkWidth(value) {
     // Normalise la valeur entre 0 et 1
     const normalizedValue = normalize(value, linkValueRange.min, linkValueRange.max);
 
