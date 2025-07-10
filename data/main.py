@@ -122,34 +122,34 @@ def get_graph_data():
         if response.status_code == 200:
             data = response.json()
             game["players"] = data.get("response", {}).get("player_count", 0)
+        link_number = sum(
+            1
+            for link in graph_data["links"]
+            if link["source"] == game_id or link["target"] == game_id
+        )
+        game["links"] = link_number
+
+    graph_data["nodes"] = sorted(
+        graph_data["nodes"], key=lambda x: x["players"], reverse=True
+    )
 
     with open("config.json", "w", encoding="utf-8") as file:
         node_min_value = (
-            min(node["players"] for node in graph_data["nodes"])
-            if graph_data["nodes"]
-            else 0
+            graph_data["nodes"][-1]["players"] if graph_data["nodes"] else 0
         )
-        node_max_value = (
-            max(node["players"] for node in graph_data["nodes"])
-            if graph_data["nodes"]
-            else 0
-        )
-        links_min_value = (
-            min(link["value"] for link in graph_data["links"])
-            if graph_data["links"]
-            else 0
-        )
-        links_max_value = (
-            max(link["value"] for link in graph_data["links"])
-            if graph_data["links"]
-            else 0
-        )
+        node_max_value = graph_data["nodes"][0]["players"] if graph_data["nodes"] else 0
+        links_min_value = graph_data["links"][-1]["value"] if graph_data["links"] else 0
+        links_max_value = graph_data["links"][0]["value"] if graph_data["links"] else 0
+        node_min_links = min((node["links"] for node in graph_data["nodes"]), default=0)
+        node_max_links = max((node["links"] for node in graph_data["nodes"]), default=0)
         json.dump(
             {
                 "node_min_value": node_min_value,
                 "node_max_value": node_max_value,
                 "links_min_value": links_min_value,
                 "links_max_value": links_max_value,
+                "node_min_links": node_min_links,
+                "node_max_links": node_max_links,
                 "nodes_count": len(graph_data["nodes"]),
                 "links_count": len(graph_data["links"]),
             },

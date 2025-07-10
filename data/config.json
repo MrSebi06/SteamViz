@@ -1,8 +1,10 @@
 {
     "node_min_value": 2,
-    "node_max_value": 965370,
+    "node_max_value": 1054677,
     "links_min_value": 20,
     "links_max_value": 132,
+    "node_min_links": 1,
+    "node_max_links": 177,
     "nodes_count": 229,
     "links_count": 4000
 }
