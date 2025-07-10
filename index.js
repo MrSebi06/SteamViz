@@ -1,12 +1,13 @@
 import ForceGraph3D from "3d-force-graph";
+import {UnrealBloomPass} from 'https://esm.sh/three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import SpriteText from "https://esm.sh/three-spritetext";
 
 // ===== CONFIGURATION =====
 const CONFIG = {
     // Configuration des nœuds
     node: {
-        textHeight: 100,
-        textOffsetY: -100.0,
+        textHeight: 10,
+        textOffsetY: 0.0,
         colorBy: "genres",
         minSize: 1,
         maxSize: 10000
@@ -16,12 +17,12 @@ const CONFIG = {
     link: {
         opacity: 0.3,
         minWidth: 0.5,
-        maxWidth: 20
+        maxWidth: 30
     },
 
     // Configuration de la force physique
     physics: {
-        chargeStrength: -10000
+        chargeStrength: -20000
     },
 
     // Sources de données
@@ -126,21 +127,28 @@ async function loadConfiguration() {
  */
 function createNodeLabel(node) {
     const sprite = new SpriteText(node.name);
-
-    // Désactive l'écriture en profondeur pour éviter les problèmes de rendu
     sprite.material.depthWrite = false;
-
-    // Applique la couleur du nœud au texte
     sprite.color = node.color;
 
-    // Adapte la taille du texte en fonction de la taille du nœud
-    // On utilise une interpolation pour que le texte soit proportionnel
-    const nodeSize = calculateNodeSize(node.value);
-    const textSizeRatio = 0.4; // Le texte fait 40% de la taille du nœud
-    sprite.textHeight = nodeSize * textSizeRatio;
+    const nodeSize = calculateNodeSize(node.players);
 
-    // Ajuste la position verticale en fonction de la taille
-    sprite.center.y = -(nodeSize * 0.15); // Position dynamique sous le nœud
+    // Calcul logarithmique de la taille du texte
+    // On utilise log(1 + x) pour éviter log(0) et avoir une croissance douce
+    const minTextHeight = 2;    // Taille minimale du texte
+    const maxTextHeight = 100;   // Taille maximale du texte
+
+    // Normalise d'abord la taille du node entre 0 et 1
+    const normalizedSize = normalize(nodeSize, CONFIG.node.minSize, CONFIG.node.maxSize);
+
+    // Applique une fonction logarithmique
+    const logScale = Math.log1p(normalizedSize * 10) / Math.log1p(10); // log1p = log(1 + x)
+
+    // Interpole entre min et max avec l'échelle logarithmique
+    sprite.textHeight = lerp(minTextHeight, maxTextHeight, logScale);
+
+    // Position au-dessus du node
+    const nodeRadius = Math.cbrt(nodeSize);
+    sprite.center.y =  - (nodeRadius + 1) * 0.15;
 
     return sprite;
 }
@@ -188,6 +196,8 @@ const graphContainer = document.getElementById("3d-graph");
 function initializeGraph() {
     // Création et configuration du graphique 3D
     const graph = new ForceGraph3D(graphContainer)
+        .backgroundColor('#000003')
+
         // Charge les données depuis le fichier JSON
         .jsonUrl(CONFIG.dataUrl)
 
@@ -206,6 +216,21 @@ function initializeGraph() {
 
         // Définit la taille du nœud
         .nodeVal((node) => calculateNodeSize(node.players))
+
+        .onNodeClick(node => {
+            const distance = calculateNodeSize(node.players) * 0.2;
+            const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
+
+            const newPos = node.x || node.y || node.z
+                ? {x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio}
+                : {x: 0, y: 0, z: distance};
+
+            graph.cameraPosition(
+                newPos,
+                node,
+                3000
+            );
+        })
 
         // === Configuration des liens ===
         // Définit la largeur des liens avec interpolation linéaire
@@ -239,10 +264,7 @@ async function initializeApp() {
         // 4. Configure l'observation du redimensionnement
         setupResizeObserver(graphContainer);
 
-        graph.onEngineStop(() => {
-            graph.zoomToFit(400);
-            console.log("Zoom to fit activé");
-        })
+        graph.onEngineStop(() => graph.zoomToFit(400));
 
         console.log("Application initialisée avec succès");
 
