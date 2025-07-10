@@ -97,7 +97,7 @@ def get_graph_data():
 
     graph_data["links"] = sorted(
         graph_data["links"], key=lambda x: x["value"], reverse=True
-    )[:1000]
+    )[:4000]
 
     linked_game_ids = set()
     for link in graph_data["links"]:
@@ -106,6 +106,13 @@ def get_graph_data():
     graph_data["nodes"] = [
         node for node in graph_data["nodes"] if node["id"] in linked_game_ids
     ]
+
+    for game in graph_data["nodes"]:
+        game_id = game["id"]
+        url = "https://store.steampowered.com/api/appdetails?appids=" + str(game_id)
+        response = requests.get(url)
+        genres = response.json().get(str(game_id), {}).get("data", {}).get("genres", [])
+        game["genres"] = ", ".join([genre["description"] for genre in genres])
 
     with open("config.json", "w", encoding="utf-8") as file:
         links_min_value = (
