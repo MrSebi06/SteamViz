@@ -2,11 +2,13 @@
   "nodes": [
     { "id": "1", "name": "Elden Ring", "group": 1, "value": 6 },
     { "id": "2", "name": "Counter Strike", "group": 2, "value": 15 },
-    { "id": "3", "name": "Apex Legends", "group": 2, "value": 9 }
+    { "id": "3", "name": "Apex Legends", "group": 2, "value": 9 },
+    { "id": "4", "name": "Hades", "group": 3, "value": 60 }
   ],
   "links": [
     { "source": "1", "target": "2", "value": 3 },
     { "source": "1", "target": "3", "value": 1 },
-    { "source": "2", "target": "3", "value": 6 }
+    { "source": "2", "target": "3", "value": 10 },
+    { "source": "4", "target": "1", "value": 2 }
   ]
 }
