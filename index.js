@@ -3,7 +3,7 @@ import ForceGraph3D from "3d-force-graph";
 const elem = document.getElementById("3d-graph");
 
 const Graph = new ForceGraph3D(elem)
-  .jsonUrl("miserables.json")
+  .jsonUrl("data/test.json")
   .nodeLabel("id")
   .nodeAutoColorBy("group")
   .onNodeClick((node) => {
@@ -25,7 +25,10 @@ const Graph = new ForceGraph3D(elem)
       node, // lookAt ({ x, y, z })
       3000, // ms transition duration
     );
-  });
+  })
+  .nodeVal((node) => node.value)
+  .linkWidth((link) => Math.sqrt(link.value))
+  .linkOpacity(0.7);
 
 resizeGraph();
 
