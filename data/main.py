@@ -124,6 +124,16 @@ def get_graph_data():
             game["players"] = data.get("response", {}).get("player_count", 0)
 
     with open("config.json", "w", encoding="utf-8") as file:
+        node_min_value = (
+            min(node["players"] for node in graph_data["nodes"])
+            if graph_data["nodes"]
+            else 0
+        )
+        node_max_value = (
+            max(node["players"] for node in graph_data["nodes"])
+            if graph_data["nodes"]
+            else 0
+        )
         links_min_value = (
             min(link["value"] for link in graph_data["links"])
             if graph_data["links"]
@@ -136,6 +146,8 @@ def get_graph_data():
         )
         json.dump(
             {
+                "node_min_value": node_min_value,
+                "node_max_value": node_max_value,
                 "links_min_value": links_min_value,
                 "links_max_value": links_max_value,
                 "nodes_count": len(graph_data["nodes"]),
