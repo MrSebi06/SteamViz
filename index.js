@@ -115,6 +115,7 @@ graph.d3Force('charge').strength(CONFIG.physics.chargeStrength);
 // ===== INITIALISATION =====
 // Redimensionne initialement le graphique
 resizeGraph();
+graph.onEngineStop(() => graph.zoomToFit(400));
 
 // Configure l'observation du redimensionnement
 setupResizeObserver(graphContainer);
