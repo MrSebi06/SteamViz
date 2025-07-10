@@ -1,13 +1,12 @@
 {
   "nodes": [
-    { "id": "Elden Ring", "group": 1, "value": 10 },
-    { "id": "Counter Strike", "group": 1, "value": 8 }
+    { "id": "1", "name": "Elden Ring", "group": 1, "value": 6 },
+    { "id": "2", "name": "Counter Strike", "group": 2, "value": 15 },
+    { "id": "3", "name": "Apex Legends", "group": 2, "value": 9 }
   ],
   "links": [
-    { "source": "Napoleon", "target": "Myriel", "value": 1 },
-    { "source": "Mlle.Baptistine", "target": "Myriel", "value": 8 },
-    { "source": "Mme.Magloire", "target": "Myriel", "value": 10 },
-    { "source": "Mme.Magloire", "target": "Mlle.Baptistine", "value": 6 },
-    { "source": "CountessdeLo", "target": "Myriel", "value": 1 }
+    { "source": "1", "target": "2", "value": 3 },
+    { "source": "1", "target": "3", "value": 1 },
+    { "source": "2", "target": "3", "value": 6 }
   ]
 }
