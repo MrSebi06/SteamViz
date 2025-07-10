@@ -114,6 +114,15 @@ def get_graph_data():
         genres = response.json().get(str(game_id), {}).get("data", {}).get("genres", [])
         game["genres"] = ", ".join([genre["description"] for genre in genres])
 
+        url = (
+            "https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/"
+        )
+        params = {"appid": game_id}
+        response = requests.get(url, params=params)
+        if response.status_code == 200:
+            data = response.json()
+            game["players"] = data.get("response", {}).get("player_count", 0)
+
     with open("config.json", "w", encoding="utf-8") as file:
         links_min_value = (
             min(link["value"] for link in graph_data["links"])
