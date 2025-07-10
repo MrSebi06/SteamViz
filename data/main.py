@@ -65,6 +65,7 @@ def get_graph_data():
         games_by_user_ids = json.load(file)
     graph_data = {"nodes": [], "links": []}
     game_ids_by_user_ids = {user_id: [] for user_id in games_by_user_ids.keys()}
+    all_game_ids = set()
     for user_id, games in games_by_user_ids.items():
         for game in games:
             game_ids_by_user_ids[user_id].append(game["appid"])
@@ -72,6 +73,7 @@ def get_graph_data():
                 "id": game["appid"],
                 "name": game["name"],
             }
+            all_game_ids.add(game["appid"])
             if parsed_game not in graph_data["nodes"]:
                 graph_data["nodes"].append(parsed_game)
 
@@ -82,18 +84,56 @@ def get_graph_data():
                 common_games = set(game_ids) & set(other_game_ids)
                 if common_games:
                     for game1, game2 in combinations(common_games, 2):
-                        if game1 != game2:
-                            link = frozenset([game1, game2])
-                            if link not in game_links:
-                                game_links[link] = 0
-                            game_links[link] += 1
+                        link = frozenset([game1, game2])
+                        if link not in game_links:
+                            game_links[link] = 0
+                        game_links[link] += 1
 
     for (game1, game2), count in game_links.items():
-        graph_data["links"].append({"source": game1, "target": game2, "value": count})
+        if count > 5:
+            graph_data["links"].append(
+                {"source": game1, "target": game2, "value": count}
+            )
+
+    graph_data["links"] = sorted(
+        graph_data["links"], key=lambda x: x["value"], reverse=True
+    )[:1000]
+
+    linked_game_ids = set()
+    for link in graph_data["links"]:
+        linked_game_ids.add(link["source"])
+        linked_game_ids.add(link["target"])
+    graph_data["nodes"] = [
+        node for node in graph_data["nodes"] if node["id"] in linked_game_ids
+    ]
+
+    with open("config.json", "w", encoding="utf-8") as file:
+        links_min_value = (
+            min(link["value"] for link in graph_data["links"])
+            if graph_data["links"]
+            else 0
+        )
+        links_max_value = (
+            max(link["value"] for link in graph_data["links"])
+            if graph_data["links"]
+            else 0
+        )
+        json.dump(
+            {
+                "links_min_value": links_min_value,
+                "links_max_value": links_max_value,
+                "nodes_count": len(graph_data["nodes"]),
+                "links_count": len(graph_data["links"]),
+            },
+            file,
+            indent=4,
+            ensure_ascii=False,
+        )
+
     with open("games.json", "w", encoding="utf-8") as file:
         json.dump(graph_data, file, indent=4, ensure_ascii=False)
 
 
 # get_games_reviews([1903340, 1245620])
-get_users_games()
+# get_users_games()
 get_graph_data()
