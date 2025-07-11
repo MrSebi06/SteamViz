@@ -1,3 +1,6 @@
+# A Steam Game Correlation Network​
+Popular Games and Their Connections Through Common Players​
+
 # How to install the project
 
 ## Frontend
