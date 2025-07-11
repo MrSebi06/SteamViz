@@ -1,5 +1,4 @@
 import ForceGraph3D from "3d-force-graph";
-import { UnrealBloomPass } from "https://esm.sh/three/examples/jsm/postprocessing/UnrealBloomPass.js";
 import SpriteText from "https://esm.sh/three-spritetext";
 
 // ===== CONFIGURATION =====
