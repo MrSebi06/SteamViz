@@ -21,7 +21,7 @@ def get_top_games(limit=30):
     return game_ids[:limit] if limit > 0 else game_ids
 
 
-def get_games_reviews(app_ids):
+def get_user_ids_from_reviews(app_ids):
     reviewers = []
     for app_id in app_ids:
         GAME_REVIEWS_URL = "https://store.steampowered.com/appreviews/" + str(app_id)
@@ -111,7 +111,7 @@ def get_graph_data():
 
     graph_data["links"] = sorted(
         graph_data["links"], key=lambda x: x["value"], reverse=True
-    )[:4000]
+    )[:6000]
 
     linked_game_ids = set()
     for link in graph_data["links"]:
@@ -179,6 +179,10 @@ def get_graph_data():
         json.dump(graph_data, file, indent=4, ensure_ascii=False)
 
 
-# get_games_reviews(get_top_games())
-# get_users_games()
-get_graph_data()
+# !! WARNING !!
+# Due to steam's rate limits, it is recommended to run these functions separately
+# with at least 2 minutes between each call. Comment out the functions you don't want to run.
+
+# get_user_ids_from_reviews(get_top_games())  # will write to user_ids.json
+# get_users_games()  # will write to user_games.json
+get_graph_data()  # will write to config.json and games.json (the main data file)
