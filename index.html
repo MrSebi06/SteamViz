@@ -1,234 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8"/>
+  <head>
+    <meta charset="utf-8" />
     <style>
-        body {
-            margin: 0;
-            font-family: Andale Mono, monospace;
-            font-size: 12px;
-        }
+      body {
+        margin: 0;
+        font-family: Andale Mono, monospace;
+        font-size: 12px;
+      }
 
-        .controls {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px;
-            border-radius: 8px;
-            color: #F0FFFF;
-        }
+      .controls {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(0, 0, 0, 0.8);
+        padding: 15px;
+        border-radius: 8px;
+        color: #f0ffff;
+      }
 
-        .controls h2 {
-            margin: 8px 0;
-            color: #F0FFFF;
-            font-size: 14px;
-        }
+      .controls h2 {
+        margin: 8px 0;
+        color: #f0ffff;
+        font-size: 14px;
+      }
 
-        .controls button {
-            margin: 5px 0;
-            height: 25px;
-            width: 150px;
-            background: #333;
-            color: #F0FFFF;
-            border: 1px solid #555;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+      .controls button {
+        margin: 5px 0;
+        height: 25px;
+        width: 150px;
+        background: #333;
+        color: #f0ffff;
+        border: 1px solid #555;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
 
-        .controls button:hover {
-            background: #555;
-        }
+      .controls button:hover {
+        background: #555;
+      }
 
-        .controls button.active {
-            background: #0066cc;
-        }
+      .controls button.active {
+        background: #0066cc;
+      }
 
-        .slider-container {
-            margin: 10px 0;
-        }
+      .slider-container {
+        margin: 10px 0;
+      }
 
-        .slider-container label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 11px;
-        }
+      .slider-container label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 11px;
+      }
 
-        .slider {
-            width: 150px;
-            margin-bottom: 5px;
-        }
+      .slider {
+        width: 150px;
+        margin-bottom: 5px;
+      }
 
-        .slider-value {
-            font-size: 10px;
-            color: #ccc;
-        }
+      .slider-value {
+        font-size: 10px;
+        color: #ccc;
+      }
 
-        /* Styles pour la liste déroulante des genres */
-        .genre-filter {
-            margin: 10px 0;
-        }
+      /* Styles pour la liste déroulante des genres */
+      .genre-filter {
+        margin: 10px 0;
+      }
 
-        .genre-filter label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 11px;
-        }
+      .genre-filter label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 11px;
+      }
 
-        .genre-filter select {
-            width: 150px;
-            height: 25px;
-            background: #333;
-            color: #F0FFFF;
-            border: 1px solid #555;
-            border-radius: 4px;
-            font-size: 11px;
-            padding: 2px 5px;
-        }
+      .genre-filter select {
+        width: 150px;
+        height: 25px;
+        background: #333;
+        color: #f0ffff;
+        border: 1px solid #555;
+        border-radius: 4px;
+        font-size: 11px;
+        padding: 2px 5px;
+      }
 
-        .genre-filter select:focus {
-            outline: none;
-            border-color: #0066cc;
-        }
+      .genre-filter select:focus {
+        outline: none;
+        border-color: #0066cc;
+      }
 
-        /* Styles pour la modal de détails */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
+      /* Styles pour la modal de détails */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: none;
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
 
-        .modal-content {
-            background: #1a1a1a;
-            color: #F0FFFF;
-            padding: 25px;
-            border-radius: 10px;
-            min-width: 300px;
-            max-width: 500px;
-            border: 2px solid #333;
-            position: relative;
-        }
+      .modal-content {
+        background: #1a1a1a;
+        color: #f0ffff;
+        padding: 25px;
+        border-radius: 10px;
+        min-width: 300px;
+        max-width: 500px;
+        border: 2px solid #333;
+        position: relative;
+      }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-        }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #333;
+        padding-bottom: 10px;
+      }
 
-        .modal-title {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 0;
-        }
+      .modal-title {
+        font-size: 18px;
+        font-weight: bold;
+        margin: 0;
+      }
 
-        .modal-close {
-            background: #666;
-            color: #F0FFFF;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+      .modal-close {
+        background: #666;
+        color: #f0ffff;
+        border: none;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-        .modal-close:hover {
-            background: #888;
-        }
+      .modal-close:hover {
+        background: #888;
+      }
 
-        .modal-body {
-            line-height: 1.6;
-        }
+      .modal-body {
+        line-height: 1.6;
+      }
 
-        .modal-detail {
-            margin: 10px 0;
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #333;
-        }
+      .modal-detail {
+        margin: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid #333;
+      }
 
-        .modal-detail:last-child {
-            border-bottom: none;
-        }
+      .modal-detail:last-child {
+        border-bottom: none;
+      }
 
-        .modal-label {
-            font-weight: bold;
-            color: #ccc;
-        }
+      .modal-label {
+        font-weight: bold;
+        color: #ccc;
+      }
 
-        .modal-value {
-            color: #F0FFFF;
-        }
+      .modal-value {
+        color: #f0ffff;
+      }
+
+      #description {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        color: #f0ffff;
+        font-size: 14px;
+      }
+
+      #explanation {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        color: #f0ffff;
+        font-size: 14px;
+        max-width: 300px;
+      }
     </style>
-</head>
-<body>
-<div id="3d-graph"></div>
+  </head>
+  <body>
+    <div id="3d-graph"></div>
 
-<!-- Contrôles -->
-<div class="controls">
-    <h2>Coloration</h2>
-    <button id="genres">
-        Genres
-    </button>
-    <button id="links_quantity">
-        Linked number
-    </button>
+    <!-- Contrôles -->
+    <div class="controls">
+      <h2>Coloration</h2>
+      <button id="genres">Genres</button>
+      <button id="links_quantity">Linked number</button>
 
-    <div class="genre-filter">
+      <div class="genre-filter">
         <label for="genre-select">Filtrer par genre:</label>
         <select id="genre-select">
-            <option value="all">Tous les genres</option>
+          <option value="all">Tous les genres</option>
         </select>
-    </div>
+      </div>
 
-    <div class="slider-container">
+      <div class="slider-container">
         <label for="node-count-slider">Nombre de nodes:</label>
-        <input type="range" id="node-count-slider" class="slider" min="10" max="229" value="229" step="1">
+        <input
+          type="range"
+          id="node-count-slider"
+          class="slider"
+          min="10"
+          max="229"
+          value="229"
+          step="1"
+        />
         <div class="slider-value">
-            <span id="node-count-value">229</span> / <span id="node-count-max">229</span>
+          <span id="node-count-value">229</span> /
+          <span id="node-count-max">229</span>
         </div>
+      </div>
     </div>
-</div>
 
-<!-- Modal de détails du node -->
-<div id="node-modal" class="modal-overlay">
-    <div class="modal-content">
+    <!-- Modal de détails du node -->
+    <div id="node-modal" class="modal-overlay">
+      <div class="modal-content">
         <div class="modal-header">
-            <h2 id="modal-node-name" class="modal-title">Nom du jeu</h2>
-            <button id="modal-close" class="modal-close">×</button>
+          <h2 id="modal-node-name" class="modal-title">Nom du jeu</h2>
+          <button id="modal-close" class="modal-close">×</button>
         </div>
         <div class="modal-body">
-            <div class="modal-detail">
-                <span class="modal-label">Genres:</span>
-                <span id="modal-genres" class="modal-value">-</span>
-            </div>
-            <div class="modal-detail">
-                <span class="modal-label">Nombre de joueurs:</span>
-                <span id="modal-players" class="modal-value">-</span>
-            </div>
-            <div class="modal-detail">
-                <span class="modal-label">Nombre de liens:</span>
-                <span id="modal-links" class="modal-value">-</span>
-            </div>
+          <div class="modal-detail">
+            <span class="modal-label">Genres:</span>
+            <span id="modal-genres" class="modal-value">-</span>
+          </div>
+          <div class="modal-detail">
+            <span class="modal-label">Nombre de joueurs:</span>
+            <span id="modal-players" class="modal-value">-</span>
+          </div>
+          <div class="modal-detail">
+            <span class="modal-label">Nombre de liens:</span>
+            <span id="modal-links" class="modal-value">-</span>
+          </div>
         </div>
+      </div>
     </div>
-</div>
 
-<script type="module" src="/index.js"></script>
-</body>
+    <div id="description">
+      <h1>SteamViz</h1>
+      <p>Visualisation des liens entre les jeux Steam</p>
+      <p>Par Teddy TRUONG & Sebastian MIHNEA</p>
+    </div>
+    <div id="explanation">
+      <p>
+        Cette visualisation représente les jeux Steam et leurs liens en fonction
+        des joueurs qui les possèdent. 
+        <ul>
+            <li>
+                Chaque node représente un jeu
+            </li>
+            <li>
+                Les liens entre les nodes représentent le nombre de joueurs qui
+                possèdent à la fois ces jeux
+            </li>
+            <li>
+                La taille des nodes est proportionnelle au nombre de joueurs
+                qui possèdent le jeu
+            </li>
+        </ul>
+      </p>
+      <p>
+        Utilisez les contrôles pour filtrer par genre et ajuster le nombre de
+        nodes affichés. Cliquez sur un node pour afficher plus de détails sur le
+        jeu.
+      </p>
+    </div>
+    <script type="module" src="/index.js"></script>
+  </body>
 </html>
