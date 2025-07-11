@@ -1,4 +1,9 @@
 {
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port $PORT --host 0.0.0.0"
+  },
   "dependencies": {
     "3d-force-graph": "^1.78.2"
   },
