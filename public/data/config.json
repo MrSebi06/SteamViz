@@ -1,0 +1,11 @@
+{
+  "node_min_value": 0,
+  "node_max_value": 710383,
+  "links_min_value": 240,
+  "links_max_value": 4830,
+  "node_min_links": 1,
+  "node_max_links": 218,
+  "nodes_count": 236,
+  "links_count": 4000,
+  "player_accounts_analyzed": 442
+}
