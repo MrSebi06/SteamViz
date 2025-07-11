@@ -1,12 +1,15 @@
 # How to install the project
 
-1. Install frontend dependencies: `npm install`
+## Frontend
+Install frontend dependencies: `npm install`
 
-2. Create a virtual environment: `cd data && python -m venv .venv`
-3. Activate the virtual environment:
+## Backend 
+**Only if you want to gather data ! Otherwise you can use the data already present in the repo.**
+1. Create a virtual environment: `cd data && python -m venv .venv`
+2. Activate the virtual environment:
    - On Windows: `.venv\Scripts\activate`
    - On macOS/Linux: `source .venv/bin/activate`
-4. Install backend dependencies: `pip install -r requirements.txt`
+3. Install backend dependencies: `pip install -r requirements.txt`
 
 # How to run the project
 
